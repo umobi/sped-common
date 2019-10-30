@@ -94,17 +94,21 @@ class SoapCurl extends SoapBase implements SoapInterface
             curl_setopt($oCurl, CURLOPT_HTTP_VERSION, $this->httpver);
             curl_setopt($oCurl, CURLOPT_SSL_VERIFYHOST, 0);
             curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, 0);
+
             if (!$this->disablesec) {
                 curl_setopt($oCurl, CURLOPT_SSL_VERIFYHOST, 2);
                 if (is_file($this->casefaz)) {
                     curl_setopt($oCurl, CURLOPT_CAINFO, $this->casefaz);
                 }
             }
-            curl_setopt($oCurl, CURLOPT_SSLVERSION, $this->soapprotocol);
-            curl_setopt($oCurl, CURLOPT_SSLCERT, $this->tempdir . $this->certfile);
-            curl_setopt($oCurl, CURLOPT_SSLKEY, $this->tempdir . $this->prifile);
-            if (!empty($this->temppass)) {
-                curl_setopt($oCurl, CURLOPT_KEYPASSWD, $this->temppass);
+
+            if (!$this->disableCertValidation) {
+                curl_setopt($oCurl, CURLOPT_SSLVERSION, $this->soapprotocol);
+                curl_setopt($oCurl, CURLOPT_SSLCERT, $this->tempdir . $this->certfile);
+                curl_setopt($oCurl, CURLOPT_SSLKEY, $this->tempdir . $this->prifile);
+                if (!empty($this->temppass)) {
+                    curl_setopt($oCurl, CURLOPT_KEYPASSWD, $this->temppass);
+                }
             }
             curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
             if (!empty($envelope)) {
