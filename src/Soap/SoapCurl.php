@@ -66,15 +66,21 @@ class SoapCurl extends SoapBase implements SoapInterface
             $soapver,
             $soapheader
         );
+
         $msgSize = strlen($envelope);
-        $parameters = [
+        $parametersDefault = [
             "Content-Type: application/soap+xml;charset=utf-8;",
             "Content-length: $msgSize"
         ];
+
         if (!empty($action)) {
-            $parameters[0] .= "action=$action";
+            $parametersDefault[0] .= "action=$action";
         }
+
+        $parameters = array_merge($parametersDefault, $parameters);
+
         $this->requestHead = implode("\n", $parameters);
+
         $this->requestBody = $envelope;
         
         try {
