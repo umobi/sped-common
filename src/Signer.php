@@ -70,7 +70,8 @@ class Signer
         if (!empty($rootname)) {
             $root = $dom->getElementsByTagName($rootname)->item(0);
         }
-        $node = $dom->getElementsByTagName($tagname)->item(0);
+        $node = self::findNode($dom, $tagname);
+
         if (empty($node) || empty($root)) {
             throw SignerException::tagNotFound($tagname);
         }
@@ -87,6 +88,14 @@ class Signer
             );
         }
         return $dom->saveXML($dom->documentElement, LIBXML_NOXMLDECL);
+    }
+
+    private static function findNode($dom, $path) {
+        $xpath = new \DOMXPath($dom);
+        $nodes = $xpath->query("//" . $path, null, false);
+        if ($nodes && $nodes->length > 0)
+            return $nodes->item(0);
+        return null;
     }
     
     /**
@@ -292,7 +301,7 @@ class Signer
                 }
             }
         }
-        $node = $dom->getElementsByTagName($tagname)->item(0);
+        $node = self::findNode($dom, $tagname);
         if (empty($node)) {
             throw SignerException::tagNotFound($tagname);
         }
